@@ -4,7 +4,7 @@ var cluster = require('cluster');
 var os = require('os');
 var ProgressBar = require('progress');
 
-var bar = new ProgressBar({
+var bar = new ProgressBar(':bar :current/:total :eta', {
   total: 10000,
   width: 80,
   clear: true
