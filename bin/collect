@@ -4,7 +4,7 @@ var cluster = require('cluster');
 var os = require('os');
 
 var options = {
-  parallel: 3000,
+  parallel: 1000,
   workers: os.cpus().length,
   db: './certs'
 };
