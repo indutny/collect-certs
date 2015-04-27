@@ -46,22 +46,22 @@ if (cluster.isMaster) {
   });
 
   master.on('cert', function(cert) {
+    totalCount++;
     if (bar && bar.curr >= bar.total) {
       bar.terminate();
       bar = null;
     }
 
     if (!bar) {
-      bar = new ProgressBar(':bar :current/:total', {
-        total: totalCount + 10000,
+      bar = new ProgressBar(':bar', {
+        total: 10000,
         width: 80,
         clear: true
       });
-      bar.tick(totalCount);
     }
 
-    bar.fmt = ':bar (:current/:total) speed ' + speed();
-    totalCount++;
+    var last = totalCount - bar.curr;
+    bar.fmt = ':bar (' + last + '/' + (last + 10000) + ') speed: ' + speed();
     bar.tick();
   });
 } else {
