@@ -11,7 +11,7 @@ try {
 } catch (e) {
 }
 
-function run(i) {
+function run(id) {
   var raw = Math.random() * 0xffffffff;
   var addr = '';
   for (var i = 0; i < 3; i++, raw >>>= 8)
@@ -20,12 +20,12 @@ function run(i) {
 
   new Collector().collect(addr, function(err, cert) {
     if (err)
-      return run(i);
+      return run(id);
 
     process.nextTick(function() {
       saveCert(addr, cert);
     });
-    run(i);
+    run(id);
   });
 }
 
