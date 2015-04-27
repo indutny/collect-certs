@@ -1,0 +1,14 @@
+{
+  "name": "collect-certs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/collector.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tls.js": "^0.5.1"
+  }
+}

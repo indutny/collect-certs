@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+var Collector = require('../');
+
+function run(i) {
+  var raw = Math.random() * 0xffffffff;
+  var addr = '';
+  for (var i = 0; i < 3; i++, raw >>>= 8)
+    addr += (raw & 0xff) + '.';
+  addr += raw;
+
+  new Collector().collect(addr, function(err, cert) {
+    if (err)
+      return run(i);
+
+    process.nextTick(function() {
+      saveCert(addr, cert);
+    });
+    run(i);
+  });
+}
+
+var parallel = 1000;
+for (var i = 0; i < parallel; i++)
+  run(i);
+
+function saveCert(addr, cert) {
+  console.log(addr);
+}
