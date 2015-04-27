@@ -42,6 +42,7 @@ if (cluster.isMaster) {
         width: 80,
         clear: true
       });
+      bar.tick(totalCount);
     }
 
     bar.tick();
