@@ -4,11 +4,7 @@ var cluster = require('cluster');
 var os = require('os');
 var ProgressBar = require('progress');
 
-var bar = new ProgressBar(':bar :current/:total :eta', {
-  total: 10000,
-  width: 80,
-  clear: true
-});
+var bar;
 
 var options = {
   parallel: 1000,
@@ -18,12 +14,36 @@ var options = {
 
 if (cluster.isMaster) {
   var master = new collector.Master(options);
+  var totalCount = 0;
+
+  master.getCount(function(err, count) {
+    if (err)
+      throw err;
+
+    totalCount += count;
+    master.start();
+  });
 
   master.on('log', function(msg) {
     console.error(msg);
   });
 
   master.on('cert', function(cert) {
+    totalCount++;
+
+    if (bar && bar.curr >= bar.total) {
+      bar.terminate();
+      bar = null;
+    }
+
+    if (!bar) {
+      bar = new ProgressBar(':bar :current/:total :eta', {
+        total: totalCount + 10000,
+        width: 80,
+        clear: true
+      });
+    }
+
     bar.tick();
   });
 } else {
