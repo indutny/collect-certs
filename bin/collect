@@ -2,10 +2,17 @@
 var collector = require('../');
 var cluster = require('cluster');
 var os = require('os');
+var ProgressBar = require('progress');
+
+var bar = new ProgressBar({
+  total: 10000,
+  width: 80,
+  clear: true
+});
 
 var options = {
-  parallel: 3000,
-  workers: os.cpus().length,
+  parallel: 1000,
+  workers: 4,
   db: './certs'
 };
 
@@ -17,7 +24,7 @@ if (cluster.isMaster) {
   });
 
   master.on('cert', function(cert) {
-    process.stdout.write('.');
+    bar.tick();
   });
 } else {
   var worker = new collector.Worker(options);
