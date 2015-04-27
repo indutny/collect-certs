@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+var db = require('levelup')(process.argv[2]);
+
+var count = 0;
+db.createReadStream({
+  keys: true,
+  gt: 'cert/',
+  lt: 'cert/z'
+}).on('data', function() {
+  count++;
+}).on('end', function() {
+  console.log(count);
+});
