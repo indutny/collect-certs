@@ -15,6 +15,23 @@ var options = {
 if (cluster.isMaster) {
   var master = new collector.Master(options);
   var totalCount = 0;
+  var snapshots = [];
+
+  setInterval(function() {
+    if (snapshots.length >= 16)
+      snapshots.shift();
+    snapshots.push(totalCount);
+  }, 1000);
+
+  function speed() {
+    if (snapshots.length === 0)
+      return 0;
+
+    var interval = (snapshots.length - 1) * 1000;
+    var count = snapshots[snapshots.length - 1] - snapshots[0];
+
+    return (count / interval) * 1000;
+  }
 
   master.getCount(function(err, count) {
     if (err)
@@ -29,15 +46,13 @@ if (cluster.isMaster) {
   });
 
   master.on('cert', function(cert) {
-    totalCount++;
-
     if (bar && bar.curr >= bar.total) {
       bar.terminate();
       bar = null;
     }
 
     if (!bar) {
-      bar = new ProgressBar(':bar :current/:total :eta', {
+      bar = new ProgressBar(':bar :current/:total', {
         total: totalCount + 10000,
         width: 80,
         clear: true
@@ -45,6 +60,8 @@ if (cluster.isMaster) {
       bar.tick(totalCount);
     }
 
+    bar.fmt = ':bar (:current/:total) speed ' + speed();
+    totalCount++;
     bar.tick();
   });
 } else {
