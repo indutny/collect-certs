@@ -60,8 +60,8 @@ if (cluster.isMaster) {
       });
     }
 
-    var last = totalCount - bar.curr;
-    bar.fmt = ':bar (' + last + '/' + (last + 10000) + ') speed: ' + speed();
+    var end = totalCount - bar.curr + 10000;
+    bar.fmt = ':bar (' + totalCount + '/' + end + ') speed: ' + speed();
     bar.tick();
   });
 } else {
