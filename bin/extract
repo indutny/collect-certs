@@ -125,7 +125,8 @@ db.createReadStream({
 
   var info = [
     // X509 version
-    cert.version.slice(1) | 0,
+    typeof cert.version === 'string' ? (cert.version.slice(1) | 0) :
+                                       cert.version,
 
     issuer,
     subject,
