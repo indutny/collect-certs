@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+var db = require('levelup')(process.argv[2]);
+
+var count = 0;
+db.createReadStream({
+  gt: 'addr/',
+  lt: 'addr/z'
+}).on('data', function(data) {
+  count++;
+  db.put('map/' + data.value + '/' + data.key);
+}).on('end', function() {
+  console.log('Mapped %d', count);
+});
