@@ -7,7 +7,7 @@ db.createReadStream({
   lt: 'addr/z'
 }).on('data', function(data) {
   count++;
-  db.put('map/' + data.value + '/' + data.key, '', function(err) {
+  db.put('map/' + data.value + '/' + data.key, '1', function(err) {
     if (err)
       throw err;
   });
