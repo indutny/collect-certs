@@ -41,7 +41,8 @@ function parallel() {
     lt: 'map/' + hash + '/z',
     keys: true
   }).on('data', function(ip) {
-    ips.push(ip.slice(4 + hash.length + 1));
+    // Slice off `map/hash/addr/`
+    ips.push(ip.slice(4 + hash.length + 6));
   }).once('end', function() {
     var info = collector.extract(pair.value, ips);
 
