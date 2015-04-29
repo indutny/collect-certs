@@ -32,10 +32,13 @@ function parallel() {
     return;
   }
 
+  // Slice off the `cert/`
+  var hash = pair.key.slice(5);
+
   var ips = [];
   db.createReadStream({
-    gt: 'map/' + pair.key + '/',
-    lt: 'map/' + pair.key + '/z',
+    gt: 'map/' + cert + '/',
+    lt: 'map/' + cert + '/z',
     key: true
   }).on('data', function(ip) {
     ips.push(ip);
