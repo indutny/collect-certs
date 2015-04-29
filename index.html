@@ -11,7 +11,7 @@
     body {
       margin: 0;
       padding: 0;
-      background: #000000 url(globe/loading.gif) center center no-repeat;
+      background: #000000 url(public/globe/loading.gif) center center no-repeat;
       color: #ffffff;
       font-family: sans-serif;
       font-size: 13px;
@@ -97,7 +97,7 @@
       position: absolute;
       bottom: 15px;
       left: 20px;
-      background: url(globe/ce.png);
+      background: url(public/globe/ce.png);
     }
 
 
@@ -128,9 +128,9 @@
 </a>
 
 
-<script type="text/javascript" src="globe/third-party/Detector.js"></script>
-<script type="text/javascript" src="globe/third-party/three.min.js"></script>
-<script type="text/javascript" src="globe/globe.js"></script>
+<script type="text/javascript" src="public/globe/third-party/Detector.js"></script>
+<script type="text/javascript" src="public/globe/third-party/three.min.js"></script>
+<script type="text/javascript" src="public/globe/globe.js"></script>
 <script type="text/javascript">
 
   var globe = DAT.Globe(document.getElementById('container'), {
@@ -160,14 +160,14 @@
   };
 
   var waiting = 2;
-  req('data/size-private.json', function(list) {
+  req('public/data/size-private.json', function(list) {
     data.priv = list;
     globe.addData(data.priv, { format: 'legend' });
     globe.createPoints('priv');
     done();
   });
 
-  req('data/size-public.json', function(list) {
+  req('public/data/size-public.json', function(list) {
     data.pub = list;
     globe.addData(data.pub, { format: 'legend' });
     globe.createPoints('pub');
