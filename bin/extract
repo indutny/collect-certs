@@ -46,7 +46,8 @@ function parallel() {
   }).once('end', function() {
     var info = collector.extract(pair.value, ips);
 
-    process.stdout.write('\n' + JSON.stringify(info) + ',');
+    if (info)
+      process.stdout.write('\n' + JSON.stringify(info) + ',');
 
     parallel();
   });
