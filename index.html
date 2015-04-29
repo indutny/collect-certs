@@ -119,7 +119,7 @@
 </div>
 
 <div id="currentInfo">
-  <span id="public" class="type">public</span>
+  <span id="public" class="type active">public</span>
   <span id="private" class="type">private</span>
 </div>
 
@@ -155,26 +155,34 @@
   }
 
   var data = {
-    priv: null,
-    pub: null
+    'private': null,
+    'public': null
+  };
+
+  var elems = {
+    'private': document.getElementById('private'),
+    'public': document.getElementById('public')
   };
 
   var waiting = 2;
   req('public/data/size-private.json', function(list) {
-    data.priv = list;
-    globe.addData(data.priv, { format: 'legend' });
-    globe.createPoints('priv');
+    data['private'] = list;
+    globe.addData(data['private'], { format: 'legend' });
+    globe.createPoints('private');
     done();
   });
 
   req('public/data/size-public.json', function(list) {
-    data.pub = list;
-    globe.addData(data.pub, { format: 'legend' });
-    globe.createPoints('pub');
+    data['public'] = list;
+    globe.addData(data['public'], { format: 'legend' });
+    globe.createPoints('public');
     done();
   });
 
   function show(type) {
+    elems['public'].className = 'type';
+    elems['private'].className = 'type';
+    elems[type].className = 'type active';
     globe.showPoints(type);
   }
 
@@ -182,12 +190,12 @@
     if (--waiting !== 0)
       return;
 
-    document.getElementById('private')
-      .addEventListener('mouseover', show.bind(null, 'priv'), false);
-    document.getElementById('public')
-      .addEventListener('mouseover', show.bind(null, 'pub'), false);
+    elems['private']
+        .addEventListener('mouseover', show.bind(null, 'private'), false);
+    elems['public']
+        .addEventListener('mouseover', show.bind(null, 'public'), false);
 
-    show('pub');
+    show('public');
     globe.animate()
     document.body.style.backgroundImage = 'none'; // remove loading
   };
