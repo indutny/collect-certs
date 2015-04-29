@@ -86,6 +86,20 @@
       padding: 10px;
     }
 
+    #legend {
+      width: 270px;
+      position: absolute;
+      left: 20px;
+      top: 163px;
+
+      font: 20px/20px Georgia;
+
+      background-color: rgba(0,0,0,0.2);
+
+      border-top: 1px solid rgba(255,255,255,0.4);
+      padding: 10px;
+    }
+
     #ce span {
       display: none;
     }
@@ -100,6 +114,18 @@
       background: url(public/globe/ce.png);
     }
 
+
+    .legend-1024 {
+      color: hsl(0, 70%, 50%);
+    }
+
+    .legend-2048 {
+      color: hsl(120, 70%, 50%);
+    }
+
+    .legend-4096 {
+      color: hsl(240, 40%, 50%);
+    }
 
   </style>
 </head>
@@ -121,6 +147,16 @@
 <div id="currentInfo">
   <span id="public" class="type active">public</span>
   <span id="private" class="type">private</span>
+</div>
+
+<div id="legend">
+  Legend:
+
+  <ul>
+    <li class="legend-1024">1024 bits</li>
+    <li class="legend-2048">2048 bits</li>
+    <li class="legend-4096">4096 bits</li>
+  </ul>
 </div>
 
 <a id="ce" href="http://www.chromeexperiments.com/globe">
