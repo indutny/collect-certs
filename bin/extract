@@ -42,7 +42,7 @@ function parallel() {
     keys: true
   }).on('data', function(ip) {
     // Slice off `map/hash/addr/`
-    ips.push(ip.slice(4 + hash.length + 6));
+    ips.push(ip.key.slice(4 + hash.length + 6));
   }).once('end', function() {
     var info = collector.extract(pair.value, ips);
 
