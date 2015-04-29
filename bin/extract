@@ -99,6 +99,8 @@ db.createReadStream({
   var selfSigned = true;
   var exts = [];
   var altnameCount = 0;
+  if (!cert.extensions)
+    cert.extensions = [];
   for (var i = 0; i < cert.extensions.length; i++) {
     var ext = cert.extensions[i];
     var typeId = ext.extnID.join('.');
