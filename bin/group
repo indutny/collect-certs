@@ -1,0 +1,144 @@
+#!/usr/bin/env node
+var fs = require('fs');
+var argv = require('yargs')
+    .demand(1)
+    .demand('group-by')
+    .default('type', 'public')
+    .argv;
+
+var json = JSON.parse(fs.readFileSync(argv._[0]) + '');
+
+var type = argv.type;
+
+var scale = argv.scale || 2;
+
+var keys = {
+  type: 3,
+  size: 8,
+  loc: 11
+};
+
+var groupIndex = keys[argv['group-by']];
+if (groupIndex === undefined)
+  throw new Error('Unknown group: ' + argv['group-by']);
+
+var map = {};
+
+if (argv.max) {
+  var count = 0;
+  var max = argv.max | 0;
+  while (count < max) {
+    var i = (Math.random() * json.length) | 0;
+    var item = json[i];
+    json.splice(i, 1);
+    if (!item)
+      continue;
+
+    count++;
+    process(item);
+  }
+} else {
+  for (var i = 0; i < json.length; i++) {
+    var item = json[i];
+    if (!item)
+      continue;
+
+    process(item);
+  }
+}
+
+function group(input, ext) {
+  var list = input.map(function(item) {
+    return [
+      Math.round(item[0] * scale) / scale,
+      Math.round(item[1] * scale) / scale,
+      item[2]
+    ];
+  }).sort(function(a, b) {
+    return a[0] < b[0] ? -1 :
+           a[0] > b[0] ? 1 :
+           a[1] < b[1] ? -1 :
+           a[1] > b[1] ? 1 : 0;
+  });
+
+  function magnitude(count) {
+    return Math.pow(count, 0.25) / 50;
+  }
+
+  var out = [];
+  var count = 0;
+  var avg = 0;
+  var prev = list[0];
+  for (var i = 0; i < list.length; i++) {
+    var loc = list[i];
+    if (loc[0] !== prev[0] || loc[1] !== prev[1]) {
+      if (ext)
+        out.push(prev[0], prev[1], magnitude(count), avg / count);
+      else
+        out.push(prev[0], prev[1], magnitude(count));
+      prev = loc;
+      count = 0;
+      avg = 0;
+    }
+
+    count++;
+    if (ext)
+      avg += loc[2];
+  }
+  if (ext)
+    out.push(prev[0], prev[1], magnitude(count), avg / count);
+  else
+    out.push(prev[0], prev[1], magnitude(count));
+
+  return out;
+}
+
+
+function process(item) {
+  if (type === 'public') {
+    if (item[keys.type] !== 0)
+      return;
+  } else if (type === 'private') {
+    if (item[keys.type] !== 1)
+      return;
+  }
+
+  var value = item[groupIndex];
+  if (!map[value])
+    map[value] = [];
+
+  var loc = item[keys.loc];
+  for (var j = 0; j < loc.length; j++)
+    map[value].push(loc[j]);
+}
+
+function merge(map) {
+  var out = [];
+  Object.keys(map).forEach(function(key) {
+    var value = key | 0;
+    var list = map[key];
+    for (var i = 0; i < list.length; i++) {
+      var loc = list[i];
+      out.push([ loc[0], loc[1], value ]);
+    }
+  });
+
+  return group(out, true);
+}
+
+function count(map) {
+  // Count and add magnitude
+  Object.keys(map).forEach(function(key) {
+    var list = map[key];
+
+    map[key] = group(map[key]);
+  });
+  return map;
+}
+
+var out;
+if (argv.merge)
+  out = merge(map);
+else
+  out = count(map);
+console.log(JSON.stringify(out));
