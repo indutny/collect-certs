@@ -39,9 +39,9 @@ function parallel() {
   db.createReadStream({
     gt: 'map/' + hash + '/',
     lt: 'map/' + hash + '/z',
-    key: true
+    keys: true
   }).on('data', function(ip) {
-    ips.push(ip);
+    ips.push(ip.slice(4 + hash.length + 1);
   }).once('end', function() {
     var info = collector.extract(pair.value, ips);
 
