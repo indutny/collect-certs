@@ -1,0 +1,82 @@
+#!/usr/bin/env node
+var fs = require('fs');
+var argv = require('yargs')
+    .demand(1)
+    .demand([ 'lat', 'long' ])
+    .default('type', 'public')
+    .argv;
+
+var json = JSON.parse(fs.readFileSync(argv._[0]) + '');
+
+var type = argv.type;
+
+var distance = argv.distance || 1;
+
+var keys = {
+  ca: 1,
+  type: 3,
+  size: 8,
+  loc: 11
+};
+
+var out = [];
+
+for (var i = 0; i < json.length; i++) {
+  var item = json[i];
+  if (!item)
+    continue;
+
+  process(item, i);
+}
+
+function filter(input, lat, long) {
+  var ids = [];
+  var ca = {};
+  for (var i = 0; i < input.length; i++) {
+    var item = input[i];
+
+    var itemDistance = Math.sqrt(Math.pow(item[0] - lat, 2),
+                                 Math.pow(item[1] - long, 2));
+    if (itemDistance > distance)
+      continue;
+
+    var j = json[item[2]];
+    if (j[keys.size] < 2048)
+      continue;
+
+    ca[j[keys.ca]] = (ca[j[keys.ca]] | 0) + 1;
+
+    ids.push(item[2]);
+  }
+  ids.sort(function(a, b) {
+    return a < b ? -1 : a > b ? 1 : 0;
+  });
+  var out = [];
+  var prev = ids[0];
+  for (var i = 0; i < ids.length; i++) {
+    if (prev === ids[i])
+      continue;
+    out.push(json[prev]);
+    prev = ids[i];
+  }
+  out.push(json[prev]);
+  return out;
+}
+
+
+function process(item, i) {
+  if (type === 'public') {
+    if (item[keys.type] !== 0)
+      return;
+  } else if (type === 'private') {
+    if (item[keys.type] !== 1)
+      return;
+  }
+
+  var loc = item[keys.loc];
+  for (var j = 0; j < loc.length; j++)
+    out.push([loc[j][0], loc[j][1], i]);
+}
+
+out = filter(out, parseFloat(argv.lat), parseFloat(argv.long));
+console.log(JSON.stringify(out));

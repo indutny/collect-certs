@@ -9,10 +9,19 @@ var argv = require('yargs')
 var json = JSON.parse(fs.readFileSync(argv._[0]) + '');
 
 var type = argv.type;
+var blacklist = {};
+
+if (argv.blacklist) {
+  var list = JSON.parse(argv.blacklist);
+  list.forEach(function(item) {
+    blacklist[item] = true;
+  });
+}
 
 var scale = argv.scale || 2;
 
 var keys = {
+  ca: 1,
   type: 3,
   size: 8,
   loc: 11
@@ -102,6 +111,9 @@ function process(item) {
     if (item[keys.type] !== 1)
       return;
   }
+
+  if (blacklist[item[keys.ca]])
+    return;
 
   var value = item[groupIndex];
   if (!map[value])
