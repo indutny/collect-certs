@@ -10,6 +10,10 @@ var json = JSON.parse(fs.readFileSync(argv._[0]) + '');
 
 var type = argv.type;
 var blacklist = {};
+var range = {
+  min: argv['range-min'] | 0,
+  max: (argv['range-max'] | 0) || Infinity
+};
 
 if (argv.blacklist) {
   var list = JSON.parse(argv.blacklist);
@@ -116,6 +120,11 @@ function process(item) {
     return;
 
   var value = item[groupIndex];
+  if (value < range.min)
+    return;
+  if (value > range.max)
+    return;
+
   if (!map[value])
     map[value] = [];
 

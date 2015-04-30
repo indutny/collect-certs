@@ -55,7 +55,7 @@
       padding: 15px;
     }
 
-    .type {
+    .type-item {
 
       font: 16px Georgia;
       line-height: 26px;
@@ -69,7 +69,7 @@
       -webkit-transition: all 0.1s ease-out;
     }
 
-    .type:hover, .type.active {
+    .type-item:hover, .type-item.active {
       font-size: 23px;
       color: #fff;
     }
@@ -114,16 +114,24 @@
       background: url(public/globe/ce.png);
     }
 
+    .size-item {
+      cursor: pointer;
+      -webkit-transition: all 0.1s ease-out;
+    }
 
-    .legend-1024 {
+    .size-item:hover, .legend-item.active {
+      font-size: 23px;
+    }
+
+    #size-1024 {
       color: hsl(0, 70%, 50%);
     }
 
-    .legend-2048 {
+    #size-2048 {
       color: hsl(120, 70%, 50%);
     }
 
-    .legend-4096 {
+    #size-4096 {
       color: hsl(240, 40%, 50%);
     }
 
@@ -145,17 +153,18 @@
 </div>
 
 <div id="currentInfo">
-  <span id="public" class="type active">public</span>
-  <span id="private" class="type">private</span>
+  <span id="type-public" class="type-item">public</span>
+  <span id="type-private" class="type-item">private</span>
 </div>
 
 <div id="legend">
   Legend:
 
   <ul>
-    <li class="legend-1024">1024 bits</li>
-    <li class="legend-2048">2048 bits</li>
-    <li class="legend-4096">4096 bits</li>
+    <li class="size-item" id="size-all">all</li>
+    <li class="size-item" id="size-1024">1024 bits</li>
+    <li class="size-item" id="size-2048">2048 bits</li>
+    <li class="size-item" id="size-4096">4096 bits</li>
   </ul>
 </div>
 
@@ -167,76 +176,7 @@
 <script type="text/javascript" src="public/globe/third-party/Detector.js"></script>
 <script type="text/javascript" src="public/globe/third-party/three.min.js"></script>
 <script type="text/javascript" src="public/globe/globe.js"></script>
-<script type="text/javascript">
-
-  var globe = DAT.Globe(document.getElementById('container'), {
-    colorFn: function(x) {
-      var c = new THREE.Color();
-      c.setHSL(Math.min((Math.max(0, x - 1024) / 1024), 2.3) * 0.3, 1.0, 0.5);
-      return c;
-    }
-  });
-
-  function req(url, cb) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
-    xhr.onreadystatechange = function(e) {
-      if (xhr.readyState !== 4)
-        return;
-      if (xhr.status !== 200)
-        return;
-      cb(JSON.parse(xhr.responseText));
-    };
-    xhr.send(null);
-  }
-
-  var data = {
-    'private': null,
-    'public': null
-  };
-
-  var elems = {
-    'private': document.getElementById('private'),
-    'public': document.getElementById('public')
-  };
-
-  var waiting = 2;
-  req('public/data/size-private.json', function(list) {
-    data['private'] = list;
-    globe.addData(data['private'], { format: 'legend' });
-    globe.createPoints('private');
-    done();
-  });
-
-  req('public/data/size-public.json', function(list) {
-    data['public'] = list;
-    globe.addData(data['public'], { format: 'legend' });
-    globe.createPoints('public');
-    done();
-  });
-
-  function show(type) {
-    elems['public'].className = 'type';
-    elems['private'].className = 'type';
-    elems[type].className = 'type active';
-    globe.showPoints(type);
-  }
-
-  function done() {
-    if (--waiting !== 0)
-      return;
-
-    elems['private']
-        .addEventListener('mouseover', show.bind(null, 'private'), false);
-    elems['public']
-        .addEventListener('mouseover', show.bind(null, 'public'), false);
-
-    show('public');
-    globe.animate()
-    document.body.style.backgroundImage = 'none'; // remove loading
-  };
-
-</script>
+<script type="text/javascript" src="public/main.js"></script>
 
 
 </body>
