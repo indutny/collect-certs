@@ -126,9 +126,21 @@ Visualizer.prototype.addMouseEvents = function addMouseEvents() {
 };
 
 Visualizer.prototype.renderContent = function renderContent() {
+  var signatureByOID = {
+    2: 'md2',
+    3: 'md4',
+    4: 'md5',
+    5: 'sha1',
+    6: 'dsi',
+    11: 'sha256',
+    12: 'sha384',
+    13: 'sha512',
+    14: 'sha224'
+  };
+
   // TODO(indutny): it could be potentially stored on server
   var stats = [
-    ['Top 10 CAs by server count', [
+    ['Top 10 CAs per server', [
       ["Verizon Akamai SureServer CA G14-SHA1",256634],
        ["GeoTrust SSL CA",136182],
        ["GeoTrust SSL CA - G4",67071],
@@ -140,10 +152,16 @@ Visualizer.prototype.renderContent = function renderContent() {
        ["COMODO SSL CA",34385],
        ["Jungo CA",32981]
     ]],
-    ['Number of altnames in cert by server', [
+    ['Number of altnames in cert per server', [
       [1,509904],[2,485952],[0,141584],[3,35375],[5,33519],
       [4,23453],[11,20288],[6,18813],[7,10284],[8,9296]
-    ]]
+    ]],
+    ['Signature type in cert per server', [
+      [5,899381],[11,495899],[4,19186],[13,680],
+      [3,164],[12,20],[2,4]
+    ].map(function(item) {
+      return [ signatureByOID[item[0]], item[1] ]
+    })]
   ];
 
   var content = document.getElementById('content');
