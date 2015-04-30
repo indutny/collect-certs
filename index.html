@@ -119,7 +119,7 @@
       -webkit-transition: all 0.1s ease-out;
     }
 
-    .size-item:hover, .legend-item.active {
+    .size-item:hover, .size-item.active {
       font-size: 23px;
     }
 
@@ -133,6 +133,38 @@
 
     #size-4096 {
       color: hsl(240, 40%, 50%);
+    }
+
+    #content {
+      width: 800px;
+      height: 400px;
+      display: block;
+      position: absolute;
+      top: 15px;
+      right: -820px;
+      border-left: 1px solid rgba(255,255,255,0.4);
+      background: rgba(0,0,0,0.7);
+      border-radius: 3px;
+
+      font-size: 18px;
+      line-height: 24px;
+      padding: 10px 10px 10px 20px;
+
+      overflow: scroll;
+
+      -webkit-transition: all 0.1s ease-out;
+    }
+
+    #content:hover {
+      right: 20px;
+    };
+
+    #content h3 {
+      font-size: 24px;
+    }
+
+    #content .stat-count {
+      color: #666;
     }
 
   </style>
@@ -172,6 +204,8 @@
   <span>This is a Chrome Experiment</span>
 </a>
 
+<div id="content">
+</div>
 
 <script type="text/javascript" src="public/globe/third-party/Detector.js"></script>
 <script type="text/javascript" src="public/globe/third-party/three.min.js"></script>

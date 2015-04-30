@@ -49,6 +49,8 @@ function Visualizer() {
   this.show('public', 'all', function() {
     document.body.style.backgroundImage = 'none'; // remove loading
   });
+
+  this.renderContent();
 }
 
 Visualizer.prototype.loadFile = function loadFile(type, size, cb) {
@@ -121,6 +123,47 @@ Visualizer.prototype.addMouseEvents = function addMouseEvents() {
       }, false);
     });
   }, this);
+};
+
+Visualizer.prototype.renderContent = function renderContent() {
+  // TODO(indutny): it could be potentially stored on server
+  var stats = [
+    ['Top 10 CAs by server count', [
+      ["Verizon Akamai SureServer CA G14-SHA1",256634],
+       ["GeoTrust SSL CA",136182],
+       ["GeoTrust SSL CA - G4",67071],
+       ["Go Daddy Secure Certificate Authority - G2",58501],
+       ["Verizon Akamai SureServer CA G14-SHA2",55009],
+       ["COMODO RSA Domain Validation Secure Server CA",51108],
+       ["RapidSSL CA",45884],
+       ["VeriSign Class 3 Secure Server CA - G3",39427],
+       ["COMODO SSL CA",34385],
+       ["Jungo CA",32981]
+    ]],
+    ['Number of altnames in cert by server', [
+      [1,509904],[2,485952],[0,141584],[3,35375],[5,33519],
+      [4,23453],[11,20288],[6,18813],[7,10284],[8,9296]
+    ]]
+  ];
+
+  var content = document.getElementById('content');
+
+  var html = '';
+  stats.forEach(function(item) {
+    var title = item[0];
+    var data = item[1];
+
+    html += '<h3>' + title + '</h3>';
+    html += '<ol>';
+    for (var i = 0; i < data.length; i++) {
+      html += '<li>' + data[i][0] +
+              '<span class="stat-count"> / ' + data[i][1] +'</span>' +
+              '</li>';
+    }
+    html += '</ol>';
+  });
+
+  content.innerHTML = html;
 };
 
 var v = new Visualizer();
